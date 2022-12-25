@@ -31,8 +31,8 @@ const authorization= async function(req,res,next){
         let authorId=authorId1.authorId.toString()
       
         let userloggedin=decodedToken.authorId
-       console.log()
-        if(authorId!==userloggedin) return res.send({status:false,msg:"not a loggedin author"})  
+       //console.log()
+        if(authorId!==userloggedin) return res.status(403).send({status:false,msg:"not a loggedin author"})  
         next()
     }
     catch (error) {

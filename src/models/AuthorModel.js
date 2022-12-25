@@ -4,6 +4,7 @@ const AuthorSchema = new mongoose.Schema({
     fname: {
         type: String,
         required: true
+        
     },
     lname: {
         type: String,

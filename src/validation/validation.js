@@ -7,6 +7,7 @@ const jwt=require("jsonwebtoken")
 const authorVlidation = async function (req, res, next) {
     try {
         let data = req.body;
+        
         let { fname, lname, title, email, password } = data
 
         if (!fname) { return res.status(400).send({ status: false, msg: "please provide the fname" }) }
@@ -67,7 +68,9 @@ const delByQeury = async function( req, res,next){
     let data = req.query
     let {tags,category,subcategory,authorId,isPublished}=data 
     if(tags)  tags=tags.split(",").map(x=>x)
+    
     if(category)  category=category.split(",").map(x=>x)
+  
     if(subcategory)  subcategory=subcategory.split(",").map(x=>x)
 
     if(Object.keys(data).length==0) return res.status(400).send({status:false, msg:"please provide query"})
@@ -86,9 +89,10 @@ const delByQeury = async function( req, res,next){
     if(authorId) query.authorId =authorId
     
     if (subcategory) query.subcategory = { $all:subcategory }
+   
     if(!(Object.keys(query).length)>0){ return res.status(400).send({msg:"please provide query"})}
     let allData = await blogModel.find(query).select({authorId:1,_id:0,isDeleted:1,isPublished:1})
-    console.log(allData)
+   
     if(allData.isPublished==false){
     if(isPublished) query.isPublished=isPublished
    }
@@ -97,15 +101,17 @@ const delByQeury = async function( req, res,next){
         let con=0
     for(let i=0;i<allData.length;i++){
         
-        console.log(allData[i].isDeleted)
+         
        
         
     if(allData[i].isDeleted==true){
         con++
         
         }
+       
         if(con==allData.length){
-            return res.status(204).send({msg:"your data is already Deleted"})
+          
+            return res.status(200).send({status:false,msg:"your data is already Deleted"})
         }
       }}
     
@@ -123,7 +129,7 @@ const delByQeury = async function( req, res,next){
     next()
         }
        catch(err){
-      res.status(500).send({catch:1,msg:err})
+      res.status(500).send({msg:err})
        }
 }
 module.exports.delByQeury=delByQeury

@@ -23,7 +23,7 @@ const createblog = async function (req, res) {
         let findId = await AuthorModel.findById(authorId)
         if (!findId) return res.status(404).send({ status: false, msg: "this authorId not exist" })
         let savedData = await blogModel.create(data)
-       return res.status(201).send({ msg: savedData })
+       return res.status(201).send({ status:true,data: savedData })
 
     }
     catch (err) {
@@ -34,9 +34,19 @@ const createblog = async function (req, res) {
 module.exports.createblog = createblog
 
 //<=============================================== get api ===============================>
+const getblog = async function (req, res) {
+    let data=req.body
+    let findDoc=await blogModel.updateOne(data)
+    res.status(200).send({data:findDoc})
+}
+
+module.exports.getblog=getblog
+
+
+
 
 const getBlog = async function (req, res) {
-    try {
+    try { 
         let data = req.query
         let {tags,category,subcategory,authorId}=data
         
@@ -59,6 +69,7 @@ const getBlog = async function (req, res) {
         if(subcategory) query.subcategory={$all:subcategory}
         
         const getData = await blogModel.find(query);
+        
         if (Object.keys(getData).length != 0) {
             return res.status(200).send({ status: true, data: getData })
         } else {
@@ -87,7 +98,7 @@ const updateBlog = async function (req, res) {
             $push: { tags, subcategory }
         }, {  upsert: true,new: true })
 
-        res.status(200).send({ status: true, data: blogUpdate })
+        res.status(200).send({ status: true,message:"update", data: blogUpdate })
 
 
     } catch (error) {
@@ -96,6 +107,30 @@ const updateBlog = async function (req, res) {
 }
 
 module.exports.updateBlog = updateBlog
+
+//<=================================== update cheking ================================> 
+const updateOneBlog=async (req,res)=>{
+try {
+    let blogId = req.params.blogId
+    
+    let data = req.body
+    let { title, body, subcategory, tags } = data
+
+    const blogUpdate = await blogModel.updateOne()
+
+    res.status(200).send({ status: true,message:"update", data: blogUpdate })
+
+
+} catch (error) {
+    res.status(500).send({ msg: error })
+}
+}
+
+module.exports.updateOneBlog=updateOneBlog
+
+
+
+
 
 //<============================================= Deleted api ============================================>
 
